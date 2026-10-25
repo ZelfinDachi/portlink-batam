@@ -1,0 +1,54 @@
+:root { --gold: #dba820; --bg: #0b0d12; --card: #1b1b1d; --field: #262628; --line: #36363a; --text: #f2f2f2; --muted: #9a9a9f; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--text); font-family: "DM Sans", sans-serif; background: radial-gradient(900px 600px at 0% 100%, #16264a 0%, transparent 60%), radial-gradient(800px 500px at 100% 0%, #10203d 0%, transparent 55%), var(--bg); }
+.hidden { display: none !important; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(219,168,32,.6); outline-offset: 2px; }
+.stage { display: grid; place-content: center; justify-items: center; gap: 14px; min-height: 100vh; padding: 24px 12px; }
+.card { display: grid; grid-template-columns: 1fr 1.08fr; width: min(1040px, 100%); min-height: 560px; padding: 12px; border-radius: 22px; background: var(--card); box-shadow: 0 30px 90px rgba(0,0,0,.55); }
+.form-side { display: flex; flex-direction: column; justify-content: center; padding: 20px clamp(24px, 5vw, 56px); }
+.brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 26px; }
+.brand strong { font: 800 15px "Manrope", sans-serif; letter-spacing: .12em; }
+.mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; color: var(--card); background: var(--gold); font: 800 17px "Manrope", sans-serif; }
+.mark span { font-size: 10px; vertical-align: top; }
+form { display: grid; gap: 14px; }
+h1 { margin: 0; text-align: center; font: 800 28px "Manrope", sans-serif; letter-spacing: -.03em; }
+.lead { margin: 0 0 8px; text-align: center; color: var(--muted); font-size: 12px; }
+label { display: grid; gap: 6px; color: var(--muted); font-size: 11px; }
+input { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--text); background: var(--field); font-size: 13px; transition: border-color .2s; }
+input::placeholder { color: #6d6d73; }
+input:focus { outline: 0; border-color: var(--gold); }
+input.bad { border-color: #e0654f; }
+.err { color: #ff8b78; font-size: 11px; }
+.pw { position: relative; display: block; }
+.pw input { padding-right: 76px; }
+.eye { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); padding: 6px 8px; border: 0; color: var(--gold); background: none; font-size: 11px; font-weight: 700; }
+.forgot { justify-self: end; color: var(--gold); font-size: 11px; font-weight: 700; text-decoration: none; }
+.gold { min-height: 46px; margin-top: 6px; border: 0; border-radius: 8px; color: #1b1b1d; background: var(--gold); font-size: 14px; font-weight: 700; transition: transform .2s, filter .2s; }
+.gold:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.gold:disabled { opacity: .6; transform: none; cursor: wait; }
+.switch { margin: 6px 0 0; text-align: center; color: var(--muted); font-size: 12px; }
+.switch button { padding: 0; border: 0; color: var(--gold); background: none; font-weight: 700; }
+.shake { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+.art { position: relative; overflow: hidden; border-radius: 16px; background: #14202a; }
+.slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .9s; }
+.slide.on { opacity: 1; }
+.art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,16,22,.1) 35%, rgba(10,16,22,.92)); }
+.caption { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; padding: 28px 30px 24px; text-align: center; }
+.caption h2 { margin: 0 0 8px; font: 800 22px/1.25 "Manrope", sans-serif; letter-spacing: -.02em; }
+.caption p { margin: 0 auto; max-width: 380px; color: #c4cbd0; font-size: 12px; line-height: 1.7; }
+.dots { display: flex; justify-content: center; gap: 7px; margin-top: 18px; }
+.dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 4px; background: rgba(255,255,255,.4); transition: width .3s, background .3s; }
+.dots button.on { width: 30px; background: var(--gold); }
+.demo-note { margin: 0; color: #6d7280; font-size: 11px; }
+.toast { position: fixed; right: 20px; bottom: 20px; max-width: min(340px, calc(100% - 40px)); padding: 12px 16px; border-radius: 9px; color: var(--text); background: #2a2a2e; border: 1px solid var(--line); font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: .2s; }
+.toast.show { opacity: 1; transform: none; }
+
+@media (max-width: 820px) {
+  .card { grid-template-columns: 1fr; min-height: 0; }
+  .art { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .slide, .gold, .dots button { transition: none; } .shake { animation: none; } }
