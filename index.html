@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="login.css">
-  <script>if (localStorage.getItem("pl_session")) location.replace("menu.html");</script>
 </head>
 <body>
   <main class="stage">
@@ -19,9 +18,9 @@
         <form id="loginForm" novalidate>
           <h1>Masuk</h1>
           <p class="lead">Masukkan akun Anda untuk membuka dasbor.</p>
-          <label>Username atau email<input name="ident" placeholder="Masukkan username atau email" autocomplete="username"></label>
+          <label>Email<input name="ident" type="email" placeholder="nama@perusahaan.com" autocomplete="email"></label>
           <label>Password<span class="pw"><input name="pw" type="password" placeholder="Masukkan password" autocomplete="current-password"><button type="button" class="eye">Lihat</button></span></label>
-          <a class="forgot" href="#" id="forgot">Lupa password?</a>
+          <a class="forgot" href="#" data-show="forgot">Lupa password?</a>
           <button class="gold" type="submit">Masuk</button>
           <p class="switch">Belum punya akun? <button type="button" data-show="register">Daftar</button></p>
         </form>
@@ -35,6 +34,22 @@
           <label>Ulangi password<input name="pw2" type="password" placeholder="Ketik ulang password" autocomplete="new-password"></label>
           <button class="gold" type="submit">Daftar akun</button>
           <p class="switch">Sudah punya akun? <button type="button" data-show="login">Masuk</button></p>
+        </form>
+
+        <form id="forgotForm" class="hidden" novalidate>
+          <h1>Lupa password</h1>
+          <p class="lead">Masukkan email akun Anda. Kami kirim tautan untuk membuat password baru.</p>
+          <label>Email<input name="email" type="email" placeholder="nama@perusahaan.com" autocomplete="email"></label>
+          <button class="gold" type="submit">Kirim tautan reset</button>
+          <p class="switch">Ingat password? <button type="button" data-show="login">Masuk</button></p>
+        </form>
+
+        <form id="resetForm" class="hidden" novalidate>
+          <h1>Password baru</h1>
+          <p class="lead">Buat password baru untuk akun Anda.</p>
+          <label>Password baru<input name="pw" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password"></label>
+          <label>Ulangi password<input name="pw2" type="password" placeholder="Ketik ulang password" autocomplete="new-password"></label>
+          <button class="gold" type="submit">Simpan password</button>
         </form>
       </div>
 
@@ -52,6 +67,8 @@
     <p class="demo-note">Prototype PBL. Akun disimpan di browser ini saja (simulasi).</p>
   </main>
   <div class="toast" id="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="login.js"></script>
 </body>
 </html>
