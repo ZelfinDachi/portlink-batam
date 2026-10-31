@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | PORTLINK Batam</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #102c3b; --teal: #1e7377; --orange: #e6a45b; --paper: #f4f2ec; --line: #dfe3dc; --muted: #5f7075; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #15232b; background: var(--paper); font: 14px "DM Sans", sans-serif; }
+    body.wait { visibility: hidden; }
+    button, input, select, textarea { font: inherit; }
+    .top { display: flex; align-items: center; gap: 14px; padding: 14px 28px; color: #fff; background: var(--navy); }
+    .top strong { font: 800 16px "Manrope", sans-serif; letter-spacing: .06em; }
+    .top #who { flex: 1; color: #b9cbcd; font-size: 12px; }
+    .top a, .top button { color: #fff; background: none; border: 1px solid rgba(255,255,255,.3); border-radius: 8px; padding: 7px 12px; text-decoration: none; font-size: 12px; cursor: pointer; }
+    main { max-width: 1000px; margin: 0 auto; padding: 26px 20px 60px; }
+    h1 { margin: 0; color: var(--navy); font: 800 22px "Manrope", sans-serif; letter-spacing: -.03em; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+    .tabs button { padding: 9px 16px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font-weight: 700; color: var(--muted); cursor: pointer; }
+    .tabs button.on { color: #fff; background: var(--navy); border-color: var(--navy); }
+    .bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .pri { padding: 9px 14px; border: 0; border-radius: 8px; color: #fff; background: var(--teal); font-weight: 700; cursor: pointer; }
+    .danger { color: #b4412c; }
+    .vendor { margin-bottom: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .vendor.off { opacity: .6; }
+    .vh { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .vh small { display: block; margin-top: 3px; color: var(--muted); }
+    .acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: start; }
+    .acts button, td button { padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; background: #fff; cursor: pointer; }
+    .acts .pri { border: 0; color: #fff; background: var(--teal); }
+    .tblwrap { overflow-x: auto; }
+    table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 6px; border-top: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    th { color: var(--muted); font-size: 11px; font-weight: 700; }
+    dialog { width: min(520px, calc(100% - 24px)); padding: 22px; border: 0; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+    dialog::backdrop { background: rgba(5,22,31,.55); }
+    dialog h2 { margin: 0 0 12px; color: var(--navy); font: 800 20px "Manrope", sans-serif; }
+    label { display: grid; gap: 4px; margin-bottom: 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    label.chk { display: flex; align-items: center; gap: 8px; }
+    input, select, textarea { width: 100%; padding: 9px 10px; border: 1px solid #cdd5d0; border-radius: 8px; color: #15232b; background: #fff; }
+    label.chk input { width: auto; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .fa { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+    .fa button { padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+    .fa .pri { border: 0; background: var(--teal); }
+    .inline { display: grid; grid-template-columns: 1fr 160px auto; gap: 8px; margin: 16px 0 6px; }
+    .note { color: var(--muted); font-size: 12px; }
+    #toast { position: fixed; right: 18px; bottom: 18px; max-width: 340px; padding: 11px 15px; border-radius: 9px; color: #fff; background: var(--navy); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 99; }
+    #toast.show { opacity: 1; }
+    [hidden] { display: none !important; }
+    @media (max-width: 640px) { .inline, .row2 { grid-template-columns: 1fr; } .top { flex-wrap: wrap; padding: 12px 16px; } }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+</head>
+<body class="wait">
+  <header class="top"><strong>PORTLINK Admin</strong><span id="who"></span><a href="menu.html">← Ke menu</a><button id="out">Keluar</button></header>
+  <main>
+    <div class="tabs"><button data-tab="cat" class="on">Katalog</button><button data-tab="usr" id="tabUsr" hidden>Pengguna</button></div>
+
+    <section id="cat">
+      <div class="bar"><h1>Katalog vendor</h1><button class="pri" id="newV">+ Vendor baru</button></div>
+      <div id="vendors"></div>
+    </section>
+
+    <section id="usr" hidden>
+      <h1>Pengelolaan pengguna</h1>
+      <form id="roleForm" class="inline">
+        <input name="email" type="email" placeholder="Email pengguna yang sudah mendaftar" required>
+        <select name="role"><option value="admin">admin</option><option value="user">user</option><option value="super_admin">super_admin</option></select>
+        <button class="pri">Terapkan peran</button>
+      </form>
+      <p class="note">Admin dapat mengelola katalog. Super admin juga dapat mengatur peran. Orangnya harus mendaftar lebih dulu. Peran akun Anda sendiri tidak bisa diubah dari sini.</p>
+      <div class="tblwrap"><table id="userTable"></table></div>
+    </section>
+  </main>
+
+  <dialog id="vDlg"><form id="vForm">
+    <h2 id="vTitle">Vendor</h2>
+    <label>Nama vendor<input name="name" required maxlength="80"></label>
+    <div class="row2">
+      <label>Jenis katalog<select name="category"><option>Trucking</option><option>Forwarding</option><option>Gudang</option><option>Alat berat</option><option>Marine</option></select></label>
+      <label>Label kategori<input name="category_label" placeholder="TRUCKING &amp; KONTAINER"></label>
+      <label>Area<input name="area" placeholder="Batu Ampar"></label>
+      <label>Lokasi<input name="location" placeholder="Batu Ampar, Batam"></label>
+      <label>Tag singkat<input name="tag" placeholder="Armada kontainer"></label>
+      <label>Rating (0–5)<input name="rating" type="number" step="0.1" min="0" max="5" value="4.5"></label>
+    </div>
+    <label>Deskripsi<textarea name="description" rows="3" maxlength="400"></textarea></label>
+    <label>Alamat gambar (https)<input name="image_url" placeholder="https://..."></label>
+    <label>Nomor WhatsApp bisnis (format 6281234567890)<input name="whatsapp" inputmode="numeric" placeholder="6281234567890"></label>
+    <label class="chk"><input name="active" type="checkbox" checked> Tampilkan di katalog</label>
+    <div class="fa"><button type="button" data-close>Batal</button><button class="pri">Simpan</button></div>
+  </form></dialog>
+
+  <dialog id="pDlg"><form id="pForm">
+    <h2 id="pTitle">Paket</h2>
+    <label>Nama paket<input name="name" required maxlength="80"></label>
+    <div class="row2">
+      <label>Harga (Rp)<input name="price" type="number" min="0" step="1000" required></label>
+      <label>Jumlah stok<input name="stock" type="number" min="0" step="1" required></label>
+    </div>
+    <label>Deskripsi<textarea name="description" rows="2" maxlength="300"></textarea></label>
+    <label class="chk"><input name="active" type="checkbox" checked> Paket aktif</label>
+    <div class="fa"><button type="button" data-close>Batal</button><button class="pri">Simpan</button></div>
+  </form></dialog>
+
+  <div id="toast" role="status"></div>
+  <script src="admin.js"></script>
+</body>
+</html>
